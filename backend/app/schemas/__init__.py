@@ -1,0 +1,1 @@
+# TenderAI — Pydantic Schemas Package
