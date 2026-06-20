@@ -1,1 +1,1 @@
-# TenderAI Backend Application
+# Foedus Backend Application

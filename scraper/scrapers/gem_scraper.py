@@ -1,5 +1,5 @@
 """
-TenderAI — GeM (Government e-Marketplace) Scraper
+Foedus — GeM (Government e-Marketplace) Scraper
 gem.gov.in — India's largest public procurement platform (₹2 lakh crore+ GMV).
 """
 

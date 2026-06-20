@@ -1,5 +1,5 @@
 """
-TenderAI — PDF Downloader
+Foedus — PDF Downloader
 Downloads tender PDF documents with retry logic and size limits.
 """
 

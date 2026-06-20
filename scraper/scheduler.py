@@ -1,5 +1,5 @@
 """
-TenderAI — Scraper Scheduler
+Foedus — Scraper Scheduler
 Orchestrates the complete tender ingestion pipeline:
   Scrape → Deduplicate → Classify → Download PDF → OCR → Embed → Store
 
@@ -45,7 +45,7 @@ async def run_pipeline():
     """
     start_time = datetime.now(timezone.utc)
     logger.info("=" * 60)
-    logger.info("🚀 TenderAI Ingestion Pipeline Starting")
+    logger.info("🚀 Foedus Ingestion Pipeline Starting")
     logger.info(f"   Time: {start_time.isoformat()}")
     logger.info("=" * 60)
 
@@ -239,7 +239,7 @@ def run_scheduler():
         scheduler.shutdown()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="TenderAI Scraper Pipeline")
+    parser = argparse.ArgumentParser(description="Foedus Scraper Pipeline")
     parser.add_argument("--once", action="store_true", help="Run pipeline once and exit")
     args = parser.parse_args()
 

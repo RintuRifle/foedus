@@ -1,1 +1,1 @@
-# TenderAI — LangGraph Agents Package (Week 2)
+# Foedus — LangGraph Agents Package (Week 2)

@@ -1,5 +1,5 @@
 """
-TenderAI — User Model
+Foedus — User Model
 Handles authentication, plan management, and usage tracking.
 """
 

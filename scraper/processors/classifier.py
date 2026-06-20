@@ -1,5 +1,5 @@
 """
-TenderAI — Tender Classifier
+Foedus — Tender Classifier
 Uses Gemini to classify tenders by sector from their title/description.
 """
 

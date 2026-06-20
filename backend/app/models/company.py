@@ -1,5 +1,5 @@
 """
-TenderAI — Company & Document Vault Models
+Foedus — Company & Document Vault Models
 Stores SME company profiles and their uploaded certificates/documents.
 """
 

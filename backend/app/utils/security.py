@@ -1,5 +1,5 @@
 """
-TenderAI — Security Utilities
+Foedus — Security Utilities
 JWT token management and password hashing with bcrypt.
 """
 

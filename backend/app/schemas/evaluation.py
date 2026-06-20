@@ -1,5 +1,5 @@
 """
-TenderAI — Evaluation Schemas
+Foedus — Evaluation Schemas
 """
 
 import uuid

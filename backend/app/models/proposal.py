@@ -1,5 +1,5 @@
 """
-TenderAI — Proposal Model
+Foedus — Proposal Model
 Stores AI-generated proposals that users can edit and export as PDF.
 """
 

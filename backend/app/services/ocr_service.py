@@ -1,5 +1,5 @@
 """
-TenderAI — OCR & PDF Text Extraction Service
+Foedus — OCR & PDF Text Extraction Service
 Primary: PyMuPDF for text-based PDFs
 Fallback: Gemini Vision API for scanned/image PDFs
 """

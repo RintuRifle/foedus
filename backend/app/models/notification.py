@@ -1,5 +1,5 @@
 """
-TenderAI — Notification & Subscription Models
+Foedus — Notification & Subscription Models
 In-app alerts, email/WhatsApp notifications, and Razorpay subscription tracking.
 """
 

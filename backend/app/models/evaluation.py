@@ -1,5 +1,5 @@
 """
-TenderAI — Evaluation Job & Compliance Item Models
+Foedus — Evaluation Job & Compliance Item Models
 Tracks the AI agent pipeline execution and stores structured results.
 """
 

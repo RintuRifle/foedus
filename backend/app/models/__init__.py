@@ -1,5 +1,5 @@
 """
-TenderAI — SQLAlchemy ORM Models
+Foedus — SQLAlchemy ORM Models
 Import all models here so Alembic can detect them.
 """
 

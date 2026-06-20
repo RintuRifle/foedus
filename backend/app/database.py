@@ -1,5 +1,5 @@
 """
-TenderAI — Database Engine & Session Management
+Foedus — Database Engine & Session Management
 Async SQLAlchemy setup with PostgreSQL.
 """
 

@@ -1,5 +1,5 @@
 """
-TenderAI — Company & Document Schemas
+Foedus — Company & Document Schemas
 """
 
 import uuid

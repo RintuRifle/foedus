@@ -1,5 +1,5 @@
 """
-TenderAI — Alembic Environment Configuration
+Foedus — Alembic Environment Configuration
 Supports both sync and async migrations.
 
 Akshit Kumar Tiwari

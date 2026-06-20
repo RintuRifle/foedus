@@ -1,5 +1,5 @@
 """
-TenderAI — Application Configuration
+Foedus — Application Configuration
 Reads all settings from environment variables via Pydantic Settings.
 """
 
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     # ── App ───────────────────────────────────────────────────
     APP_ENV: str = "development"
     APP_DEBUG: bool = True
-    APP_NAME: str = "TenderAI"
+    APP_NAME: str = "Foedus"
     CORS_ORIGINS: str = "http://localhost:3000,http://localhost:3001"
 
     @property
@@ -30,15 +30,15 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
     # ── Database ──────────────────────────────────────────────
-    DATABASE_URL: str = "postgresql+asyncpg://tenderai:tenderai_dev_2024@localhost:5432/tenderai_db"
-    DATABASE_URL_SYNC: str = "postgresql://tenderai:tenderai_dev_2024@localhost:5432/tenderai_db"
+    DATABASE_URL: str = "postgresql+asyncpg://foedus:foedus_dev_2024@localhost:5432/foedus_db"
+    DATABASE_URL_SYNC: str = "postgresql://foedus:foedus_dev_2024@localhost:5432/foedus_db"
 
     # ── Redis ─────────────────────────────────────────────────
     REDIS_URL: str = "redis://localhost:6379/0"
 
     # ── Qdrant ────────────────────────────────────────────────
     QDRANT_URL: str = "http://localhost:6333"
-    QDRANT_COLLECTION: str = "tenderai_tenders"
+    QDRANT_COLLECTION: str = "foedus_tenders"
 
     # ── JWT Auth ──────────────────────────────────────────────
     JWT_SECRET: str = "change-this-to-a-random-64-char-string-in-production"
@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     # ── Supabase ──────────────────────────────────────────────
     SUPABASE_URL: str = ""
     SUPABASE_KEY: str = ""
-    SUPABASE_STORAGE_BUCKET: str = "tenderai-docs"
+    SUPABASE_STORAGE_BUCKET: str = "foedus-docs"
 
     # ── Razorpay ──────────────────────────────────────────────
     RAZORPAY_KEY_ID: str = ""
@@ -66,7 +66,7 @@ class Settings(BaseSettings):
     # ── LangSmith ─────────────────────────────────────────────
     LANGCHAIN_TRACING_V2: bool = False
     LANGCHAIN_API_KEY: str = ""
-    LANGCHAIN_PROJECT: str = "tenderai"
+    LANGCHAIN_PROJECT: str = "foedus"
 
     # ── Sentry ────────────────────────────────────────────────
     SENTRY_DSN: str = ""

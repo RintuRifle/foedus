@@ -1,5 +1,5 @@
 """
-TenderAI — Helper Utilities
+Foedus — Helper Utilities
 Common functions used across the codebase.
 """
 

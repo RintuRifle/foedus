@@ -1,5 +1,5 @@
 """
-TenderAI — Embedding Service
+Foedus — Embedding Service
 Generates vector embeddings from text using BGE-M3 (free, multilingual Hindi+English).
 """
 

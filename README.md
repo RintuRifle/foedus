@@ -1,10 +1,10 @@
-# 🏆 TenderAI
+# 🏆 Foedus
 
 ### AI-Powered Tender Discovery & Proposal Agent for Indian SMEs
 
 > *"Tender dhundo mat — Tender khud tumhare paas aaye."*
 
-TenderAI is a multi-agent AI SaaS that automatically scrapes government tender portals (eprocure.gov.in, GeM, CPPP), matches tenders to your company profile, checks eligibility, and drafts ready-to-submit proposals — all in under 2 minutes.
+Foedus is a multi-agent AI SaaS that automatically scrapes government tender portals (eprocure.gov.in, GeM, CPPP), matches tenders to your company profile, checks eligibility, and drafts ready-to-submit proposals — all in under 2 minutes.
 
 ---
 
@@ -37,8 +37,8 @@ User (Next.js Dashboard) → FastAPI → LangGraph (6-Agent Pipeline)
 
 ### 1. Clone & Setup
 ```bash
-git clone https://github.com/your-username/tenderai.git
-cd tenderai
+git clone https://github.com/your-username/foedus.git
+cd foedus
 cp .env.example .env
 # Fill in your API keys in .env
 ```
@@ -74,7 +74,7 @@ make scrape
 ## 📁 Project Structure
 
 ```
-tenderai/
+foedus/
 ├── backend/          # FastAPI + LangGraph agents
 │   ├── app/
 │   │   ├── agents/   # 6-agent LangGraph pipeline

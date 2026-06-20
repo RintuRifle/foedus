@@ -1,5 +1,5 @@
 """
-TenderAI — Structured Logging with Loguru
+Foedus — Structured Logging with Loguru
 Replaces Python's default logging with colored, structured output.
 """
 
@@ -30,7 +30,7 @@ logger.add(
 
 if settings.APP_ENV == "production":
     logger.add(
-        "logs/tenderai_{time:YYYY-MM-DD}.log",
+        "logs/foedus_{time:YYYY-MM-DD}.log",
         rotation="500 MB",
         retention="30 days",
         compression="gz",

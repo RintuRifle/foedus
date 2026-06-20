@@ -1,5 +1,5 @@
 """
-TenderAI — Tender Deduplicator
+Foedus — Tender Deduplicator
 Prevents the same tender from being stored multiple times.
 Uses SHA-256 hash of (title + department + submission_date).
 """

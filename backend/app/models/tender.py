@@ -1,5 +1,5 @@
 """
-TenderAI — Tender & TenderMatch Models
+Foedus — Tender & TenderMatch Models
 Stores scraped government tenders and per-user match scores.
 """
 

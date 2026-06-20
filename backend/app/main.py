@@ -1,5 +1,5 @@
 """
-TenderAI — FastAPI Application Entry Point
+Foedus — FastAPI Application Entry Point
 Central app instance with CORS, routers, and lifecycle events.
 """
 
@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
     Runs on startup and shutdown.
     """
     # ── Startup ───────────────────────────────────────────────
-    logger.info("🚀 TenderAI Backend starting up...")
+    logger.info("🚀 Foedus Backend starting up...")
     logger.info(f"   Environment: {settings.APP_ENV}")
     logger.info(f"   Debug: {settings.APP_DEBUG}")
 
@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
     yield
 
     # ── Shutdown ──────────────────────────────────────────────
-    logger.info("🛑 TenderAI Backend shutting down...")
+    logger.info("🛑 Foedus Backend shutting down...")
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -68,7 +68,7 @@ async def health_check():
 async def root():
     """Root endpoint with API information."""
     return {
-        "message": "Welcome to TenderAI API",
+        "message": "Welcome to Foedus API",
         "docs": "/docs",
         "health": "/health",
         "version": "1.0.0",

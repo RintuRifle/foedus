@@ -1,5 +1,5 @@
 """
-TenderAI — eProcure.gov.in Scraper
+Foedus — eProcure.gov.in Scraper
 Central Public Procurement Portal — India's largest tender portal.
 """
 

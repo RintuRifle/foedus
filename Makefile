@@ -1,10 +1,10 @@
 
-# TenderAI — Development Commands
+# Foedus — Development Commands
 
 .PHONY: help dev stop migrate test scrape lint clean
 
 help: ## Show this help message
-	@echo "TenderAI Development Commands:"
+	@echo "Foedus Development Commands:"
 	@echo "────────────────────────────────────────"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 

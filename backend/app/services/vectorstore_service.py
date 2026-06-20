@@ -1,5 +1,5 @@
 """
-TenderAI — Vector Store Service (Qdrant)
+Foedus — Vector Store Service (Qdrant)
 Manages tender document embeddings for semantic search (RAG engine).
 """
 

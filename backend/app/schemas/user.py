@@ -1,5 +1,5 @@
 """
-TenderAI — User Schemas (Request/Response validation)
+Foedus — User Schemas (Request/Response validation)
 """
 
 import uuid

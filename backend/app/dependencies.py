@@ -1,5 +1,5 @@
 """
-TenderAI — FastAPI Dependencies
+Foedus — FastAPI Dependencies
 Reusable dependency injectors for routes.
 """
 

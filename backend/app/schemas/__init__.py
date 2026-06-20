@@ -1,1 +1,1 @@
-# TenderAI — Pydantic Schemas Package
+# Foedus — Pydantic Schemas Package

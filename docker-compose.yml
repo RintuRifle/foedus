@@ -1,4 +1,4 @@
-# TenderAI — Local Development Services
+# Foedus — Local Development Services
 # Usage: docker-compose up -d
 
 version: "3.9"
@@ -9,18 +9,18 @@ services:
   # ──────────────────────────────────────────────
   postgres:
     image: pgvector/pgvector:pg16
-    container_name: tenderai-postgres
+    container_name: foedus-postgres
     restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: tenderai
-      POSTGRES_PASSWORD: tenderai_dev_2024
-      POSTGRES_DB: tenderai_db
+      POSTGRES_USER: foedus
+      POSTGRES_PASSWORD: foedus_dev_2024
+      POSTGRES_DB: foedus_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tenderai -d tenderai_db"]
+      test: ["CMD-SHELL", "pg_isready -U foedus -d foedus_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,7 +30,7 @@ services:
   # ──────────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: tenderai-redis
+    container_name: foedus-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -47,7 +47,7 @@ services:
   # ──────────────────────────────────────────────
   qdrant:
     image: qdrant/qdrant:latest
-    container_name: tenderai-qdrant
+    container_name: foedus-qdrant
     restart: unless-stopped
     ports:
       - "6333:6333"   # REST API

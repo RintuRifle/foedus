@@ -1,5 +1,5 @@
 """
-TenderAI — Proposal Schemas
+Foedus — Proposal Schemas
 """
 
 import uuid

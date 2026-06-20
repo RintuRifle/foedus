@@ -1,1 +1,1 @@
-# TenderAI — Celery Tasks Package (Week 3)
+# Foedus — Celery Tasks Package (Week 3)

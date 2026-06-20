@@ -1,5 +1,5 @@
 """
-TenderAI — Abstract Base Scraper
+Foedus — Abstract Base Scraper
 All portal-specific scrapers inherit from this class.
 Provides retry logic, rate limiting, and consistent output format.
 """
