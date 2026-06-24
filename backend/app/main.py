@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.routers import evaluations
 from app.utils.logger import logger
 
 @asynccontextmanager
@@ -53,6 +54,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(evaluations.router, prefix="/api/v1")
 
 @app.get("/health", tags=["System"])
 async def health_check():
