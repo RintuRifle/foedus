@@ -9,11 +9,13 @@ from pathlib import Path
 from typing import Optional
 
 import fitz  # PyMuPDF
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 from app.config import settings
 from app.utils.helpers import clean_text
 from app.utils.logger import logger
+
 
 class OCRService:
     """
@@ -25,14 +27,13 @@ class OCRService:
     3. Fall back to Gemini Vision API for scanned/image PDFs
     """
 
-    MIN_TEXT_THRESHOLD = 100  # chars — below this, PDF is likely scanned
+    MIN_TEXT_THRESHOLD = 100
 
     def __init__(self):
         if settings.GEMINI_API_KEY:
-            genai.configure(api_key=settings.GEMINI_API_KEY)
-            self.gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+            self._client = genai.Client(api_key=settings.GEMINI_API_KEY)
         else:
-            self.gemini_model = None
+            self._client = None
             logger.warning("GEMINI_API_KEY not set — OCR fallback unavailable")
 
     async def extract_text(self, pdf_path: str) -> str:
@@ -45,25 +46,22 @@ class OCRService:
             logger.error(f"PDF not found: {pdf_path}")
             return ""
 
-        logger.info(f"📄 Extracting text from: {path.name}")
+        logger.info(f"Extracting text from: {path.name}")
 
-        # Step 1: Try PyMuPDF
         text = self._extract_with_pymupdf(str(path))
 
         if len(text.strip()) >= self.MIN_TEXT_THRESHOLD:
-            logger.info(f"   ✅ PyMuPDF extracted {len(text)} chars")
+            logger.info(f"   PyMuPDF extracted {len(text)} chars")
             return clean_text(text)
 
-        # Step 2: Fallback to Gemini Vision
-        logger.info(f"   ⚠️ PyMuPDF got only {len(text)} chars — trying Gemini Vision...")
+        logger.info(f"   PyMuPDF got only {len(text)} chars — trying Gemini Vision...")
         gemini_text = await self._extract_with_gemini_vision(str(path))
 
         if gemini_text:
-            logger.info(f"   ✅ Gemini Vision extracted {len(gemini_text)} chars")
+            logger.info(f"   Gemini Vision extracted {len(gemini_text)} chars")
             return clean_text(gemini_text)
 
-        # Return whatever we got
-        logger.warning(f"   ❌ Could not extract meaningful text from {path.name}")
+        logger.warning(f"   Could not extract meaningful text from {path.name}")
         return clean_text(text)
 
     def _extract_with_pymupdf(self, pdf_path: str) -> str:
@@ -82,17 +80,13 @@ class OCRService:
             return ""
 
     async def _extract_with_gemini_vision(self, pdf_path: str) -> Optional[str]:
-        """
-        Extract text from scanned PDF using Gemini 1.5 Flash vision.
-        Uploads the PDF and asks Gemini to extract all text.
-        """
-        if not self.gemini_model:
-            logger.warning("Gemini model not available for vision OCR")
+        """Extract text from scanned PDF using Gemini Vision."""
+        if not self._client:
+            logger.warning("Gemini client not available for vision OCR")
             return None
 
         try:
-            # Upload the PDF to Gemini
-            uploaded_file = genai.upload_file(pdf_path)
+            uploaded_file = self._client.files.upload(file=pdf_path)
 
             prompt = """Extract ALL text content from this PDF document.
             Maintain the original structure including:
@@ -104,17 +98,17 @@ class OCRService:
 
             Return ONLY the extracted text, no commentary."""
 
-            response = self.gemini_model.generate_content(
-                [prompt, uploaded_file],
-                generation_config={
-                    "temperature": 0.1,
-                    "max_output_tokens": 8192,
-                },
+            response = self._client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=[prompt, uploaded_file],
+                config=types.GenerateContentConfig(
+                    temperature=0.1,
+                    max_output_tokens=8192,
+                ),
             )
 
-            # Clean up uploaded file
             try:
-                genai.delete_file(uploaded_file.name)
+                self._client.files.delete(name=uploaded_file.name)
             except Exception:
                 pass
 
@@ -157,6 +151,7 @@ class OCRService:
         except Exception as e:
             logger.error(f"PDF type detection failed: {e}")
             return "unknown"
+
 
 # Singleton
 ocr_service = OCRService()
