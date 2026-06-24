@@ -1,4 +1,4 @@
-# 🏆 Foedus
+# Foedus
 
 ### AI-Powered Tender Discovery & Proposal Agent for Indian SMEs
 
@@ -8,7 +8,7 @@ Foedus is a multi-agent AI SaaS that automatically scrapes government tender por
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 Internet (Govt Portals) → Scraper → OCR → Vector DB
@@ -18,7 +18,7 @@ User (Next.js Dashboard) → FastAPI → LangGraph (6-Agent Pipeline)
                               Compliance Report + Proposal PDF
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -28,7 +28,7 @@ User (Next.js Dashboard) → FastAPI → LangGraph (6-Agent Pipeline)
 | Database | PostgreSQL (Supabase), Qdrant |
 | Payments | Razorpay |
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.12+
@@ -71,7 +71,7 @@ make dev
 make scrape
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 foedus/
@@ -90,7 +90,7 @@ foedus/
 └── docker-compose.yml
 ```
 
-## 📄 License
+## License
 
 MIT
 
