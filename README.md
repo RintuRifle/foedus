@@ -90,10 +90,6 @@ foedus/
 └── docker-compose.yml
 ```
 
-## License
-
-MIT
-
 ---
 
 *Built for India. For the person tired of reading 80-page tender PDFs at midnight.*
