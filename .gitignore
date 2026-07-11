@@ -57,3 +57,4 @@ backend/alembic/versions/*.py
 *.bak
 *.tmp
 .cache/
+WEEK*_NOTES.md
