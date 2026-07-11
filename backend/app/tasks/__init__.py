@@ -28,3 +28,4 @@ celery_app.conf.update(
 
 # Auto-discover tasks from app.tasks package
 celery_app.autodiscover_tasks(["app.tasks"])
+from app.tasks.evaluation_task import evaluate_tender_task

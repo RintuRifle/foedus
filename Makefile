@@ -66,3 +66,9 @@ clean: ## Remove Python cache files
 	find . -type f -name "*.pyc" -delete 2>/dev/null; \
 	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null; \
 	echo "🧹 Cleaned up cache files"
+
+frontend-install: ## Install frontend dependencies
+	cd frontend && npm install
+
+frontend-dev: ## Run Next.js dev server
+	cd frontend && npm run dev

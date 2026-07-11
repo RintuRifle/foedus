@@ -14,6 +14,7 @@ from app.agents.graph import run_evaluation
 from app.database import async_session_factory
 from app.models.evaluation import ComplianceItem, EvaluationJob
 from app.models.proposal import Proposal
+from app.services.progress_service import publish_progress
 from app.tasks import celery_app
 from app.utils.logger import logger
 
@@ -30,7 +31,7 @@ def evaluate_tender_task(self, job_id: str, tender_id: str, user_id: str):
 
     Flow:
     1. Update EvaluationJob status → running
-    2. Run 6-agent LangGraph pipeline
+    2. Run 6-agent LangGraph pipeline (streams live progress)
     3. Save results to EvaluationJob (match, audit, risk)
     4. Save ComplianceItems from audit
     5. Save Proposal from writer
@@ -67,13 +68,26 @@ async def _run_evaluation_async(task, job_id: str, tender_id: str, user_id: str)
         job.celery_task_id = task.request.id
         await db.commit()
 
+        async def on_progress(agent: str, pct: int, message: str) -> None:
+            """
+            Called by the graph after each agent node completes.
+            1. Persists progress to the EvaluationJob row (polling fallback)
+            2. Publishes to Redis pub/sub (WebSocket live updates)
+            """
+            job.current_agent = agent
+            job.progress_pct = pct
+            job.current_message = message
+            await db.commit()
+            await publish_progress(job_id, agent, pct, message, status="running")
+
         try:
-            # Step 2: Run the pipeline
+            # Step 2: Run the pipeline (streams progress node-by-node)
             final_state = await run_evaluation(
                 tender_id=tender_id,
                 user_id=user_id,
                 db_session=db,
                 job_id=job_id,
+                progress_callback=on_progress,
             )
 
             # Step 3: Save results to EvaluationJob
@@ -121,6 +135,11 @@ async def _run_evaluation_async(task, job_id: str, tender_id: str, user_id: str)
                 db.add(proposal)
 
             await db.commit()
+            await publish_progress(
+                job_id, "completed", 100,
+                "Evaluation complete — report & proposal ready",
+                status="completed",
+            )
             logger.info(f"✅ Evaluation job {job_id} completed successfully")
 
         except Exception as e:
@@ -130,6 +149,11 @@ async def _run_evaluation_async(task, job_id: str, tender_id: str, user_id: str)
             job.current_agent = "error"
             job.completed_at = datetime.now(timezone.utc)
             await db.commit()
+            await publish_progress(
+                job_id, "error", job.progress_pct or 0,
+                "Evaluation failed — see error log",
+                status="failed",
+            )
             raise
 
 

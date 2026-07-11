@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #08090c;
+  --brass: #d4a853;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--ink);
+  color: #ede6d6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Atmosphere: brass aurora + film grain ─────────────────── */
+.atmosphere::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 500px at 78% -10%, rgba(212, 168, 83, 0.09), transparent 60%),
+    radial-gradient(800px 420px at 8% 108%, rgba(92, 168, 255, 0.05), transparent 60%);
+}
+
+.atmosphere::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Dossier card texture ──────────────────────────────────── */
+.dossier {
+  background:
+    linear-gradient(160deg, rgba(212, 168, 83, 0.05) 0%, transparent 38%),
+    linear-gradient(180deg, #12151d 0%, #0e1015 100%);
+  border: 1px solid rgba(212, 168, 83, 0.14);
+}
+
+.dossier-stamp {
+  border: 1.5px solid currentColor;
+  border-radius: 4px;
+  transform: rotate(-6deg);
+  letter-spacing: 0.18em;
+}
+
+/* ── Classified redaction hover reveal ─────────────────────── */
+.redacted {
+  background: #1b1f2b;
+  color: transparent;
+  border-radius: 2px;
+  transition: all 0.5s ease;
+  user-select: none;
+}
+
+.redacted:hover {
+  background: transparent;
+  color: inherit;
+}
+
+/* ── Brass hairline divider ────────────────────────────────── */
+.hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 168, 83, 0.35), transparent);
+}
+
+/* ── Progress scan effect ──────────────────────────────────── */
+.scan-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 30%;
+  background: linear-gradient(180deg, transparent, rgba(212, 168, 83, 0.08), transparent);
+  animation: scanline 2.4s linear infinite;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0e1015;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1b1f2b;
+  border-radius: 6px;
+  border: 2px solid #0e1015;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8a6f35;
+}
+
+::selection {
+  background: rgba(212, 168, 83, 0.3);
+}
+
+/* ── Markdown proposal rendering ───────────────────────────── */
+.prose-dossier h1,
+.prose-dossier h2,
+.prose-dossier h3 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  color: #f0c674;
+  margin: 1.4em 0 0.5em;
+  line-height: 1.25;
+}
+
+.prose-dossier h1 { font-size: 1.6rem; }
+.prose-dossier h2 { font-size: 1.25rem; }
+.prose-dossier h3 { font-size: 1.05rem; }
+
+.prose-dossier p,
+.prose-dossier li {
+  color: #cfc8b8;
+  line-height: 1.75;
+  margin: 0.5em 0;
+  font-size: 0.925rem;
+}
+
+.prose-dossier ul,
+.prose-dossier ol {
+  padding-left: 1.4em;
+  list-style: disc;
+}
+
+.prose-dossier strong { color: #ede6d6; }
+
+.prose-dossier table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.85rem;
+}
+
+.prose-dossier th,
+.prose-dossier td {
+  border: 1px solid rgba(212, 168, 83, 0.14);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.prose-dossier th {
+  color: #d4a853;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}

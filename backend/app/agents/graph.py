@@ -3,6 +3,8 @@ Foedus — LangGraph Pipeline Assembly
 Wires all 6 agents into a StateGraph with conditional Writer↔Reviewer loop.
 """
 
+from typing import Awaitable, Callable, Optional
+
 from langgraph.graph import END, StateGraph
 
 from app.agents.agent_0_preprocessor import preprocessor_node
@@ -76,12 +78,26 @@ def build_evaluation_graph() -> StateGraph:
 # Compile the graph once at import time
 evaluation_graph = build_evaluation_graph().compile()
 
+# Type alias: async fn(agent_name, progress_pct, human_message) -> None
+ProgressCallback = Callable[[str, int, str], Awaitable[None]]
+
+# Progress % reached *after* each node completes, + user-facing message
+NODE_PROGRESS = {
+    "preprocessor": (20, "Tender document parsed & key sections extracted"),
+    "matchmaker": (35, "Profile match score computed"),
+    "auditor": (55, "Eligibility cross-checked against your document vault"),
+    "risk_assessor": (70, "Risk & win-probability analysis complete"),
+    "writer": (85, "Proposal draft written"),
+    "reviewer": (95, "Draft reviewed for quality & hallucinations"),
+}
+
 
 async def run_evaluation(
     tender_id: str,
     user_id: str,
     db_session,
     job_id: str = None,
+    progress_callback: Optional[ProgressCallback] = None,
 ) -> AgentState:
     """
     Execute the full 6-agent evaluation pipeline.
@@ -91,6 +107,8 @@ async def run_evaluation(
         user_id: UUID of the user requesting evaluation
         db_session: Async SQLAlchemy session
         job_id: Optional evaluation job ID for tracking
+        progress_callback: Optional async fn(agent, pct, message) invoked
+            after each node completes — used for WebSocket live updates.
 
     Returns:
         Final AgentState with all agent outputs
@@ -101,6 +119,17 @@ async def run_evaluation(
     logger.info(f"   User: {user_id}")
     logger.info("=" * 60)
 
+    async def _notify(agent: str, pct: int, message: str) -> None:
+        """Fire the progress callback without letting it break the pipeline."""
+        if progress_callback is None:
+            return
+        try:
+            await progress_callback(agent, pct, message)
+        except Exception as e:
+            logger.warning(f"Progress callback failed ({agent}): {e}")
+
+    await _notify("context_builder", 5, "Gathering tender text & company context")
+
     # Build initial state with all context
     initial_state = await build_context(
         tender_id=tender_id,
@@ -109,8 +138,21 @@ async def run_evaluation(
         job_id=job_id,
     )
 
-    # Run the LangGraph pipeline
-    final_state = await evaluation_graph.ainvoke(initial_state)
+    await _notify("preprocessor", 10, "Context ready — starting agent pipeline")
+
+    # Run the LangGraph pipeline, streaming node-by-node so we can
+    # emit live progress after each agent completes.
+    final_state: AgentState = dict(initial_state)
+    async for chunk in evaluation_graph.astream(initial_state, stream_mode="updates"):
+        for node_name, node_output in chunk.items():
+            if isinstance(node_output, dict):
+                final_state.update(node_output)
+            pct, message = NODE_PROGRESS.get(node_name, (None, None))
+            if pct is not None:
+                # Writer↔Reviewer revision loop: annotate repeat passes
+                if node_name == "writer" and final_state.get("revision_count", 0) > 0:
+                    message = f"Revising proposal (round {final_state['revision_count']})"
+                await _notify(node_name, pct, message)
 
     logger.info("=" * 60)
     logger.info("✅ Evaluation Pipeline Complete!")
