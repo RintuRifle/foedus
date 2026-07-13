@@ -58,3 +58,8 @@ backend/alembic/versions/*.py
 *.tmp
 .cache/
 WEEK*_NOTES.md
+
+# Dev Scripts
+test_*.py
+check_*.py
+seed_*.py
