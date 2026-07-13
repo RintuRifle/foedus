@@ -14,8 +14,6 @@ Six AI agents that scrape government tender portals, audit your eligibility with
 [![LangGraph](https://img.shields.io/badge/LangGraph-6--agent_pipeline-1C3C3C)](https://langchain-ai.github.io/langgraph/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![Gemini](https://img.shields.io/badge/Gemini-1.5_Flash-4285F4?logo=google&logoColor=white)](https://ai.google.dev)
-[![License: MIT](https://img.shields.io/badge/License-MIT-D4A853.svg)](LICENSE)
-
 </div>
 
 ---
@@ -76,16 +74,53 @@ Free tier (3 evaluations/month) → Pro at ₹999/month via Razorpay. Signature-
 
 ## Architecture
 
-```
-                    ┌──────────────────────────────────────────────┐
- Govt portals ──►   │ Scraper (cron 6AM) → OCR → Qdrant + Postgres │
-                    └───────────────────┬──────────────────────────┘
-                                        │
- Next.js 15  ──►  FastAPI  ──►  Celery + Redis  ──►  LangGraph (6 agents, Gemini)
-  (Vercel)         │  ▲                │                     │
-                   │  └── WebSocket ◄── Redis pub/sub ◄──────┘  (live progress)
-                   ▼
-            Compliance report + Proposal PDF
+```mermaid
+graph TD
+    classDef frontend fill:#08090C,stroke:#D4A853,stroke-width:2px,color:#FFF
+    classDef backend fill:#1C3C3C,stroke:#4ADE80,stroke-width:2px,color:#FFF
+    classDef ai fill:#2B1B4A,stroke:#A78BFA,stroke-width:2px,color:#FFF
+    classDef data fill:#0F172A,stroke:#38BDF8,stroke-width:2px,color:#FFF
+    classDef scraper fill:#451A03,stroke:#F59E0B,stroke-width:2px,color:#FFF
+
+    subgraph "External"
+        Portals[Govt Tenders]:::scraper
+    end
+
+    subgraph "Data Pipeline"
+        Scraper[Python Scraper cron]:::scraper
+        OCR[Vision OCR Fallback]:::ai
+        Portals --> Scraper
+        Scraper --> OCR
+    end
+
+    subgraph "Databases"
+        Postgres[(PostgreSQL)]:::data
+        Qdrant[(Qdrant Vector DB)]:::data
+        Redis[(Redis Cache/PubSub)]:::data
+        Scraper --> Postgres
+        Scraper --> Qdrant
+    end
+
+    subgraph "Core App"
+        UI[Next.js 15 UI]:::frontend
+        API[FastAPI Backend]:::backend
+        Worker[Celery Task Worker]:::backend
+        
+        UI <-->|REST / WebSockets| API
+        API -->|Enqueue Eval| Redis
+        Redis -->|Consume Task| Worker
+        API <--> Postgres
+    end
+
+    subgraph "Intelligence Engine"
+        LangGraph[LangGraph 6-Agent Pipeline]:::ai
+        Gemini((Gemini Models)):::ai
+        
+        Worker --> LangGraph
+        LangGraph <--> Gemini
+        LangGraph <--> Qdrant
+        LangGraph -->|Publish Progress| Redis
+    end
 ```
 
 | Layer | Tech |
@@ -99,7 +134,7 @@ Free tier (3 evaluations/month) → Pro at ₹999/month via Razorpay. Signature-
 | Payments | Razorpay (HMAC-verified, webhook-backed) |
 | Observability | LangSmith tracing, Loguru, Sentry |
 
-## Hallucination Control (the part interviewers ask about)
+## Hallucination Control
 
 A wrong compliance verdict can cost an SME a tender worth lakhs. So:
 
@@ -152,7 +187,11 @@ foedus/
 │   ├── evals/            # golden dataset + eval runner with hallucination traps
 │   ├── tests/            # guardrail unit tests
 │   └── Dockerfile
-├── frontend/             # Next.js 15 — "The Dossier" design system
+├── frontend/             # Next.js 15 React application
+│   ├── app/              # App router (login, dashboard, onboarding)
+│   ├── components/       # "The Dossier" design system (brass/dark UI)
+│   ├── lib/              # API clients, WebSocket hooks, utils
+│   └── public/           # Static assets (fonts, icons)
 ├── scraper/              # eprocure/GeM scrapers + dedup + PDF pipeline
 ├── render.yaml           # infra as code
 └── DEPLOYMENT.md
@@ -166,12 +205,13 @@ foedus/
 - [ ] Hindi tender document support
 - [ ] BOQ (Bill of Quantities) auto-fill
 
-## License
-
-MIT — build something useful with it.
-
 ---
 
 <div align="center">
 <i>Built for the person tired of reading 80-page tender PDFs at midnight.</i>
+
+<br/>
+<br/>
+
+**⭐ If you like this project, please drop a star! ⭐**
 </div>
