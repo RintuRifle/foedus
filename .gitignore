@@ -63,3 +63,7 @@ WEEK*_NOTES.md
 test_*.py
 check_*.py
 seed_*.py
+
+# Private docs
+DEMO_SCRIPT.md
+DEPLOYMENT.md

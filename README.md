@@ -169,7 +169,7 @@ make eval                # live agent eval vs golden dataset (needs GEMINI_API_K
 
 ## Deployment
 
-One-click blueprint for Render (`render.yaml`: API + worker + cron scraper + Redis) with Vercel frontend, Supabase Postgres, and Qdrant Cloud — **~₹0/month** on free tiers. Full guide: [DEPLOYMENT.md](DEPLOYMENT.md).
+One-click blueprint for Render (`render.yaml`: API + worker + cron scraper + Redis) with Vercel frontend, Supabase Postgres, and Qdrant Cloud — **~₹0/month** on free tiers.
 
 ## Project Structure
 
@@ -193,8 +193,7 @@ foedus/
 │   ├── lib/              # API clients, WebSocket hooks, utils
 │   └── public/           # Static assets (fonts, icons)
 ├── scraper/              # eprocure/GeM scrapers + dedup + PDF pipeline
-├── render.yaml           # infra as code
-└── DEPLOYMENT.md
+└── render.yaml           # infra as code
 ```
 
 ## Roadmap
