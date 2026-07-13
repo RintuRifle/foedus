@@ -7,6 +7,7 @@ from app.agents.prompts import RISK_PROMPT, RISK_SYSTEM
 from app.agents.schemas import RiskResult
 from app.agents.state import AgentState
 from app.services.llm_service import llm_service
+from app.utils.guardrails import clamp_result_scores, coerce_enum
 from app.utils.helpers import format_inr
 from app.utils.logger import logger
 
@@ -81,13 +82,35 @@ async def risk_node(state: AgentState) -> dict:
             risk_factors=["Risk assessment could not be completed"],
         )
 
+    # ── Guardrails ────────────────────────────────────────────
+    result_dict = result.model_dump()
+    clamp_result_scores(result_dict, ["win_probability"])
+    result_dict["competition_level"] = coerce_enum(
+        result_dict.get("competition_level"),
+        {"low", "medium", "high", "very_high"},
+        default="medium",
+    )
+    result_dict["recommendation"] = coerce_enum(
+        result_dict.get("recommendation"),
+        {"bid", "conditional_bid", "skip"},
+        default="conditional_bid",
+    )
+    # Sanity: can't be a strong bid if audit says not eligible
+    audit_status = audit.get("overall_status", "")
+    if audit_status == "not_eligible" and result_dict["recommendation"] == "bid":
+        result_dict["recommendation"] = "conditional_bid"
+        result_dict["risk_factors"] = (
+            ["Audit found company NOT eligible — recommendation downgraded"]
+            + result_dict.get("risk_factors", [])
+        )
+
     logger.info(
-        f"   ✅ Risk done — win_prob={result.win_probability:.2f}, "
-        f"competition={result.competition_level}, rec={result.recommendation}"
+        f"   ✅ Risk done — win_prob={result_dict['win_probability']:.2f}, "
+        f"competition={result_dict['competition_level']}, rec={result_dict['recommendation']}"
     )
 
     return {
-        "risk_result": result.model_dump(),
+        "risk_result": result_dict,
         "current_agent": "risk_assessor",
         "progress_pct": 70,
     }

@@ -28,7 +28,7 @@ class LLMService:
     - Token usage tracking
     """
 
-    MODEL_NAME = "gemini-2.0-flash"
+    MODEL_NAME = "gemini-flash-lite-latest"
     MAX_RETRIES = 3
     BASE_DELAY = 2.0
 
@@ -106,6 +106,8 @@ class LLMService:
                 else:
                     logger.error(f"LLM call failed after {self.MAX_RETRIES} attempts: {e}")
                     raise
+
+        raise RuntimeError(f"LLM call failed after {self.MAX_RETRIES} retries due to rate limits.")
 
     async def call_plain(
         self,

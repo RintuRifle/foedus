@@ -72,3 +72,9 @@ frontend-install: ## Install frontend dependencies
 
 frontend-dev: ## Run Next.js dev server
 	cd frontend && npm run dev
+
+eval: ## Run agent evals against golden dataset (needs GEMINI_API_KEY)
+	cd backend && python -m evals.run_evals
+
+test-guardrails: ## Run offline guardrail unit tests
+	cd backend && pytest tests/test_guardrails.py -v

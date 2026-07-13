@@ -1,95 +1,57 @@
+<div align="center">
+
 # Foedus
 
-### AI-Powered Tender Discovery & Proposal Agent for Indian SMEs
+### AI Tender Intelligence for Indian SMEs
 
-> *"Tender dhundo mat — Tender khud tumhare paas aaye."*
+*"Tender dhundo mat — tender khud tumhare paas aaye."*
 
-Foedus is a multi-agent AI SaaS that automatically scrapes government tender portals (eprocure.gov.in, GeM, CPPP), matches tenders to your company profile, checks eligibility, and drafts ready-to-submit proposals — all in under 2 minutes.
+Six AI agents that scrape government tender portals, audit your eligibility with
+**verified, grounded citations**, and draft a submission-ready proposal — in under two minutes.
 
----
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-async-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![LangGraph](https://img.shields.io/badge/LangGraph-6--agent_pipeline-1C3C3C)](https://langchain-ai.github.io/langgraph/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![Gemini](https://img.shields.io/badge/Gemini-1.5_Flash-4285F4?logo=google&logoColor=white)](https://ai.google.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-D4A853.svg)](LICENSE)
 
-## Architecture
-
-```
-Internet (Govt Portals) → Scraper → OCR → Vector DB
-                                              ↓
-User (Next.js Dashboard) → FastAPI → LangGraph (6-Agent Pipeline)
-                                              ↓
-                              Compliance Report + Proposal PDF
-```
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 15, Tailwind, Shadcn/UI, Framer Motion |
-| Backend | FastAPI (Python 3.12), Celery, Redis |
-| AI Engine | LangGraph, Gemini 1.5 Flash, BGE-M3 |
-| Database | PostgreSQL (Supabase), Qdrant |
-| Payments | Razorpay |
-
-## Quick Start
-
-### Prerequisites
-- Python 3.12+
-- Docker & Docker Compose
-- Node.js 20+ (for frontend, Week 4)
-
-### 1. Clone & Setup
-```bash
-git clone https://github.com/your-username/foedus.git
-cd foedus
-cp .env.example .env
-# Fill in your API keys in .env
-```
-
-### 2. Start Infrastructure
-```bash
-make infra-up
-# Starts: PostgreSQL :5432 | Redis :6379 | Qdrant :6333
-```
-
-### 3. Install Dependencies
-```bash
-make install
-```
-
-### 4. Run Migrations
-```bash
-make migrate
-```
-
-### 5. Start Development Server
-```bash
-make dev
-# API available at http://localhost:8000
-# API docs at http://localhost:8000/docs
-```
-
-### 6. Run Scraper (fetch tenders)
-```bash
-make scrape
-```
-
-## Project Structure
-
-```
-foedus/
-├── backend/          # FastAPI + LangGraph agents
-│   ├── app/
-│   │   ├── agents/   # 6-agent LangGraph pipeline
-│   │   ├── models/   # SQLAlchemy ORM models
-│   │   ├── routers/  # API endpoints
-│   │   ├── schemas/  # Pydantic validation
-│   │   ├── services/ # Business logic
-│   │   ├── tasks/    # Celery async tasks
-│   │   └── utils/    # Helpers, security, logging
-│   └── alembic/      # DB migrations
-├── scraper/          # Standalone scraper service
-├── frontend/         # Next.js 15 (Week 4)
-└── docker-compose.yml
-```
+</div>
 
 ---
 
-*Built for India. For the person tired of reading 80-page tender PDFs at midnight.*
+## The Problem
+
+Indian government publishes tenders worth **lakhs of crores** every year across eprocure.gov.in, GeM, and CPPP. For a small business, participating means:
+
+- Manually scanning multiple portals daily
+- Reading **80-page tender PDFs** to find the eligibility section buried on page 40
+- One missed clause (turnover certificate, EMD format, license copy) → **instant rejection**
+- Days of effort writing a technical proposal from scratch
+
+Foedus automates the entire funnel: **discover → match → audit → assess risk → draft → review**.
+
+## The Product
+
+### ✨ Magic Onboarding — no forms, just drop your brochure
+The AI reads your company brochure PDF and builds your profile: sectors, turnover, certifications, past projects.
+
+![Magic Onboarding](docs/screenshots/onboarding.png)
+
+### 🎯 Daily Matches — Tinder for tenders
+Every morning the scraper pulls fresh tenders and matches them against your profile. Swipe right to save, left to dismiss. Match score, EMD, deadline — sab card pe.
+
+![Daily Matches](docs/screenshots/daily-matches.png)
+
+### 🤖 The 6-Agent Evaluation Pipeline
+One click deploys six LangGraph agents with **live WebSocket progress**:
+
+```
+Preprocessor → Matchmaker → Auditor → Risk Assessor → Writer ⇄ Reviewer
+                              ↑                          (revision loop)
+                    the star: extracts every
+                 eligibility criterion & cross-checks
+                    against your document vault
+```
+
+![Pipeline](docs/screen

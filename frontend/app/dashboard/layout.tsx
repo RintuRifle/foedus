@@ -11,6 +11,8 @@ const NAV = [
   { href: "/dashboard/saved", label: "Saved", code: "02" },
   { href: "/dashboard/pipeline", label: "Pipeline", code: "03" },
   { href: "/dashboard/proposals", label: "Proposals", code: "04" },
+  { href: "/dashboard/billing", label: "Billing", code: "05" },
+  { href: "/onboarding", label: "Profile Setup", code: "06" },
 ];
 
 export default function DashboardLayout({
@@ -72,6 +74,20 @@ export default function DashboardLayout({
             );
           })}
         </nav>
+
+        {user && user.plan === "free" && (
+          <Link
+            href="/dashboard/billing"
+            className="mx-3 mb-3 block rounded-md border border-brass/30 bg-brass/5 px-4 py-3 transition-all hover:border-brass/60 hover:shadow-glowbrass"
+          >
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brass">
+              Go Pro — ₹999/mo
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              Unlimited evaluations + auto-drafting
+            </p>
+          </Link>
+        )}
 
         <div className="border-t border-line px-6 py-5">
           {user && (

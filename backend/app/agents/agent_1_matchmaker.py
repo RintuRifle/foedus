@@ -8,6 +8,7 @@ from app.agents.prompts import MATCHMAKER_PROMPT, MATCHMAKER_SYSTEM
 from app.agents.schemas import MatchResult
 from app.agents.state import AgentState
 from app.services.llm_service import llm_service
+from app.utils.guardrails import clamp_result_scores, coerce_enum
 from app.utils.helpers import format_inr
 from app.utils.logger import logger
 
@@ -66,10 +67,23 @@ async def matchmaker_node(state: AgentState) -> dict:
             match_reasons=["Unable to fully assess — manual review recommended"],
         )
 
-    logger.info(f"   ✅ Matchmaker done — score={result.overall_score:.2f}, rec={result.recommendation}")
+    # ── Guardrails: range safety + enum coercion ─────────────
+    result_dict = result.model_dump()
+    clamp_result_scores(
+        result_dict,
+        ["overall_score", "sector_match", "budget_match",
+         "location_match", "experience_match", "certification_match"],
+    )
+    result_dict["recommendation"] = coerce_enum(
+        result_dict.get("recommendation"),
+        {"strong_match", "good_match", "moderate", "weak_match", "skip", "evaluate"},
+        default="evaluate",
+    )
+
+    logger.info(f"   ✅ Matchmaker done — score={result_dict['overall_score']:.2f}, rec={result_dict['recommendation']}")
 
     return {
-        "match_result": result.model_dump(),
+        "match_result": result_dict,
         "current_agent": "matchmaker",
         "progress_pct": 30,
     }

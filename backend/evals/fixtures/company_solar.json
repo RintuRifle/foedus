@@ -1,0 +1,15 @@
+{
+  "name": "SuryaTech Energy Solutions Pvt Ltd",
+  "description": "Patna-based solar EPC company specializing in rooftop and ground-mounted installations for government and commercial clients across Bihar and Jharkhand.",
+  "sector": ["solar", "electrical", "renewable"],
+  "turnover_lakh": 420.0,
+  "emp_count": 45,
+  "years_experience": 7,
+  "location_state": "Bihar",
+  "location_city": "Patna",
+  "pan_number": "AABCS1234F",
+  "gst_number": "10AABCS1234F1Z5",
+  "iso_certs": ["ISO 9001:2015", "ISO 14001:2015"],
+  "past_projects": "Completed 1.2 MW grid-connected rooftop solar plant for Bihar State Power Holding Company HQ, Patna (2024, Rs 5.8 Cr). Completed 800 kW rooftop solar at AIIMS Patna (2023, Rs 3.9 Cr). Completed 600 kW solar plant at Magadh University (2022). MNRE empanelled vendor since 2021. Holds valid Electrical Contractor License from Bihar Electrical Licensing Board.",
+  "keywords": ["rooftop solar", "grid-connected", "EPC", "net metering", "O&M", "MNRE empanelled"]
+}

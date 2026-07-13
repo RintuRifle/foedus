@@ -135,6 +135,14 @@ export default function TenderDetailPage() {
         {error && (
           <div className="mt-6">
             <ErrorNote message={error} />
+            {error.toLowerCase().includes("limit") && (
+              <a
+                href="/dashboard/billing"
+                className="mt-3 inline-block rounded-md bg-brass px-5 py-2.5 text-sm font-semibold text-ink shadow-glowbrass transition-all hover:bg-brass-bright"
+              >
+                Upgrade to Pro — unlimited evaluations →
+              </a>
+            )}
           </div>
         )}
 

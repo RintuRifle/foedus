@@ -8,6 +8,7 @@ from app.agents.prompts import AUDITOR_PROMPT, AUDITOR_SYSTEM
 from app.agents.schemas import AuditResult
 from app.agents.state import AgentState
 from app.services.llm_service import llm_service
+from app.utils.guardrails import coerce_enum, smart_truncate, verify_compliance_grounding
 from app.utils.helpers import format_inr
 from app.utils.logger import logger
 
@@ -35,7 +36,7 @@ async def auditor_node(state: AgentState) -> dict:
     ) if company_docs else "No documents uploaded"
 
     prompt = AUDITOR_PROMPT.format(
-        tender_text=tender_text[:6000],  # More text for thorough audit
+        tender_text=smart_truncate(tender_text, max_chars=12000),  # keeps eligibility sections
         company_name=company.get("name", ""),
         company_turnover=company.get("turnover_lakh", "N/A"),
         company_experience=company.get("years_experience", "N/A"),
@@ -67,13 +68,31 @@ async def auditor_node(state: AgentState) -> dict:
             summary="Audit could not be completed — manual review required",
         )
 
+    # ── Guardrails: verify every cited quote actually exists ──
+    result_dict = result.model_dump()
+    result_dict["compliance_items"], grounding_rate = verify_compliance_grounding(
+        result_dict.get("compliance_items", []), tender_text
+    )
+    result_dict["grounding_rate"] = grounding_rate
+    result_dict["overall_status"] = coerce_enum(
+        result_dict.get("overall_status"),
+        {"eligible", "partially_eligible", "not_eligible"},
+        default="partially_eligible",
+    )
+    # Grounding may have downgraded items — recount
+    items = result_dict["compliance_items"]
+    result_dict["met_count"] = sum(1 for i in items if i.get("status") == "met")
+    result_dict["partial_count"] = sum(1 for i in items if i.get("status") == "partial")
+    result_dict["missing_count"] = sum(1 for i in items if i.get("status") == "missing")
+
     logger.info(
-        f"   ✅ Auditor done — {result.overall_status} "
-        f"(met={result.met_count}, partial={result.partial_count}, missing={result.missing_count})"
+        f"   ✅ Auditor done — {result_dict['overall_status']} "
+        f"(met={result_dict['met_count']}, partial={result_dict['partial_count']}, "
+        f"missing={result_dict['missing_count']}, grounding={grounding_rate:.0%})"
     )
 
     return {
-        "audit_result": result.model_dump(),
+        "audit_result": result_dict,
         "current_agent": "auditor",
         "progress_pct": 50,
     }

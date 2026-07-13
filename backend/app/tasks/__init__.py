@@ -6,6 +6,10 @@ Async task queue for running evaluations in the background.
 from celery import Celery
 
 from app.config import settings
+from app.utils.tracing import configure_langsmith
+
+# Enable LangSmith tracing in the worker process (no-op if disabled)
+configure_langsmith()
 
 celery_app = Celery(
     "foedus",

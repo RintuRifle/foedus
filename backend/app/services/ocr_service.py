@@ -99,7 +99,7 @@ class OCRService:
             Return ONLY the extracted text, no commentary."""
 
             response = self._client.models.generate_content(
-                model="gemini-2.0-flash",
+                model="gemini-flash-lite-latest",
                 contents=[prompt, uploaded_file],
                 config=types.GenerateContentConfig(
                     temperature=0.1,

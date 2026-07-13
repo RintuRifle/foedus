@@ -5,7 +5,7 @@ import time
 import requests
 import sys
 
-BASE_URL = "http://localhost:8000/api/v1"
+BASE_URL = "http://localhost:8001/api/v1"
 
 def run_test():
     print("🚀 Starting Foedus E2E Test Workflow...")
@@ -21,7 +21,7 @@ def run_test():
     # Wait for server to be up
     for _ in range(5):
         try:
-            requests.get("http://localhost:8000/health")
+            requests.get("http://localhost:8001/health")
             break
         except requests.exceptions.ConnectionError:
             print("  Waiting for server...")

@@ -9,8 +9,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import auth, company, evaluations, proposals, tenders, ws
+from app.routers import auth, company, evaluations, payments, proposals, tenders, ws
 from app.utils.logger import logger
+from app.utils.tracing import configure_langsmith
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,6 +23,8 @@ async def lifespan(app: FastAPI):
     logger.info("🚀 Foedus Backend starting up...")
     logger.info(f"   Environment: {settings.APP_ENV}")
     logger.info(f"   Debug: {settings.APP_DEBUG}")
+
+    configure_langsmith()
 
     # Initialize Sentry if DSN is provided
     if settings.SENTRY_DSN:
@@ -60,6 +63,7 @@ app.include_router(company.router, prefix="/api/v1")
 app.include_router(tenders.router, prefix="/api/v1")
 app.include_router(evaluations.router, prefix="/api/v1")
 app.include_router(proposals.router, prefix="/api/v1")
+app.include_router(payments.router, prefix="/api/v1")
 app.include_router(ws.router, prefix="/api/v1")
 
 @app.get("/health", tags=["System"])

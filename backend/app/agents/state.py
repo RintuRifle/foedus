@@ -44,6 +44,8 @@ class AgentState(TypedDict, total=False):
     # Agent 4: Writer output
     proposal_draft: str
 
+    proposal_lint_issues: list        # Guardrail lint flags from Writer
+
     # Agent 5: Reviewer output
     review_result: dict
     final_proposal: str            # Approved version after review

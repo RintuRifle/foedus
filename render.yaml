@@ -1,0 +1,91 @@
+# Foedus — Render Blueprint (Infrastructure as Code)
+# Deploy: Render dashboard → New → Blueprint → point at this repo.
+# Free/starter tiers everywhere → runs at ~₹0 for early users.
+
+services:
+  # ── FastAPI web service ─────────────────────────────────────
+  - type: web
+    name: foedus-api
+    runtime: docker
+    rootDir: .
+    dockerfilePath: ./backend/Dockerfile
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: DATABASE_URL          # Supabase pooler URL (postgresql+asyncpg://...)
+        sync: false
+      - key: DATABASE_URL_SYNC     # For alembic (postgresql://...)
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: foedus-redis
+          property: connectionString
+      - key: QDRANT_URL            # Qdrant Cloud cluster URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: CORS_ORIGINS          # https://your-app.vercel.app
+        sync: false
+      - key: LANGCHAIN_TRACING_V2
+        value: "false"
+
+  # ── Celery worker (same image, worker command) ──────────────
+  - type: worker
+    name: foedus-worker
+    runtime: docker
+    rootDir: .
+    dockerfilePath: ./backend/Dockerfile
+    dockerCommand: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=2
+    plan: starter
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: foedus-redis
+          property: connectionString
+      - key: QDRANT_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  # ── Scraper cron (daily 6 AM IST = 00:30 UTC) ───────────────
+  - type: cron
+    name: foedus-scraper
+    runtime: docker
+    rootDir: .
+    dockerfilePath: ./backend/Dockerfile
+    schedule: "30 0 * * *"
+    dockerCommand: python -m scraper.scheduler --once
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # ── Redis (broker + pub/sub) ────────────────────────────────
+  - type: keyvalue
+    name: foedus-redis
+    plan: free
+    ipAllowList: []

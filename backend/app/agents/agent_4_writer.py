@@ -6,6 +6,7 @@ Generates professional tender proposals in Markdown.
 from app.agents.prompts import WRITER_PROMPT, WRITER_SYSTEM
 from app.agents.state import AgentState
 from app.services.llm_service import llm_service
+from app.utils.guardrails import lint_proposal
 from app.utils.helpers import format_inr
 from app.utils.logger import logger
 
@@ -82,11 +83,15 @@ Notes: {review.get('revision_notes', 'No specific notes')}
         logger.error(f"Agent 4 failed: {e}")
         proposal = f"# Proposal for {state.get('tender_title', 'Tender')}\n\n_Proposal generation failed. Please try again._"
 
+    # ── Guardrails: strip AI leakage, flag placeholders ───────
+    proposal, lint_issues = lint_proposal(proposal)
+
     word_count = len(proposal.split())
     logger.info(f"   ✅ Writer done — {word_count} words (revision #{revision_count})")
 
     return {
         "proposal_draft": proposal,
+        "proposal_lint_issues": lint_issues,
         "current_agent": "writer",
         "progress_pct": 85,
     }

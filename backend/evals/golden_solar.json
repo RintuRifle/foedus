@@ -1,0 +1,66 @@
+{
+  "description": "Golden expectations for tender_solar.txt × company_solar.json. Keywords are matched against extracted criteria text (case-insensitive).",
+  "expected_criteria": [
+    {
+      "id": "turnover",
+      "keywords": ["turnover", "300"],
+      "expected_status": "met",
+      "why": "Tender needs 300L avg turnover; company has 420L"
+    },
+    {
+      "id": "similar_work",
+      "keywords": ["similar work", "1 MW", "solar"],
+      "any_keyword": true,
+      "expected_status": "met",
+      "why": "Company completed 1.2 MW plant (>= 1 MW requirement)"
+    },
+    {
+      "id": "gst_bihar",
+      "keywords": ["gst"],
+      "expected_status": "met",
+      "why": "Company has Bihar GST (10AABCS...)"
+    },
+    {
+      "id": "mnre_almm",
+      "keywords": ["mnre", "almm"],
+      "any_keyword": true,
+      "expected_status": "met",
+      "why": "Company is MNRE empanelled since 2021"
+    },
+    {
+      "id": "balance_sheets",
+      "keywords": ["balance sheet", "audited"],
+      "any_keyword": true,
+      "expected_status": "missing",
+      "why": "No audited balance sheets in the (empty) document vault"
+    },
+    {
+      "id": "electrical_license",
+      "keywords": ["electrical contractor", "license"],
+      "any_keyword": true,
+      "expected_status": "met",
+      "why": "Company holds Bihar Electrical Contractor License"
+    },
+    {
+      "id": "blacklist_affidavit",
+      "keywords": ["blacklist"],
+      "expected_status": "missing",
+      "why": "Self-declaration affidavit not in vault — must be produced"
+    }
+  ],
+  "hallucination_traps": {
+    "description": "Things NOT in the tender. If the auditor invents these, it's hallucinating.",
+    "forbidden_criterion_keywords": [
+      "iso 45001",
+      "startup india",
+      "msme registration",
+      "women entrepreneur",
+      "security deposit of rs. 50"
+    ]
+  },
+  "expected_match": {
+    "min_overall_score": 0.6,
+    "why": "Same state, same sector, turnover comfortably clears, direct experience"
+  },
+  "expected_eligibility": ["eligible", "partially_eligible"]
+}

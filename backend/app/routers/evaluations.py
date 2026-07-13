@@ -21,6 +21,7 @@ from app.schemas.evaluation import (
     EvalReportResponse,
 )
 from app.tasks.evaluation_task import evaluate_tender_task
+from app.utils.billing import ensure_plan_current
 from app.utils.logger import logger
 
 router = APIRouter(prefix="/evaluations", tags=["Evaluations"])
@@ -61,7 +62,8 @@ async def start_evaluation(
     Returns immediately (202) with a job_id — track progress via
     WebSocket /ws/evaluations/{job_id} or polling /{job_id}/status.
     """
-    # ── Plan quota check ──────────────────────────────────────
+    # ── Plan quota check (downgrades expired Pro first) ───────
+    current_user = await ensure_plan_current(current_user, db)
     if not current_user.can_evaluate:
         raise HTTPException(
             status_code=status.HTTP_402_PAYMENT_REQUIRED,

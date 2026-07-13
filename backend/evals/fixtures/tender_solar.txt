@@ -1,0 +1,68 @@
+GOVERNMENT OF BIHAR
+BIHAR RENEWABLE ENERGY DEVELOPMENT AGENCY (BREDA)
+NOTICE INVITING TENDER
+
+Tender Reference No: BREDA/SOLAR/2026/0142
+Name of Work: Design, Supply, Installation, Testing and Commissioning of 2 MW
+Grid-Connected Rooftop Solar Power Plants at Government Buildings in Patna
+Division, including 5 years Comprehensive Operation and Maintenance.
+
+Estimated Cost: Rs. 950 Lakhs (Rs. 9.50 Crores)
+Earnest Money Deposit (EMD): Rs. 9,50,000 (Rupees Nine Lakhs Fifty Thousand only)
+Tender Document Fee: Rs. 11,800 (including GST)
+Last Date of Bid Submission: 28-08-2026, 15:00 hrs
+Date of Technical Bid Opening: 30-08-2026, 11:00 hrs
+
+SECTION 4: ELIGIBILITY CRITERIA (PRE-QUALIFICATION)
+
+4.1 The bidder must have an average annual turnover of at least Rs. 300 Lakhs
+during the last three financial years (FY 2022-23, 2023-24, 2024-25), duly
+certified by a Chartered Accountant.
+
+4.2 The bidder should have satisfactorily completed at least one similar work
+of grid-connected solar power plant of minimum capacity 1 MW, OR two works of
+minimum capacity 500 kW each, during the last five years. Work completion
+certificates from the client must be enclosed.
+
+4.3 The bidder must possess valid GST registration in the State of Bihar or
+undertake to obtain the same within 30 days of award of contract.
+
+4.4 The bidder must be an MNRE empanelled vendor OR hold valid certification
+under ALMM (Approved List of Models and Manufacturers) for solar modules.
+
+4.5 The bidder must submit audited balance sheets and profit & loss statements
+for the last three financial years.
+
+4.6 The bidder shall have a valid Electrical Contractor License issued by the
+Bihar Electrical Licensing Board or equivalent authority of any State
+Government.
+
+4.7 Joint Ventures / Consortiums are NOT permitted for this tender.
+
+4.8 The bidder must not have been blacklisted by any Central/State Government
+department as on the date of bid submission. A self-declaration affidavit on
+Rs. 100 stamp paper must be submitted.
+
+SECTION 5: SCOPE OF WORK
+
+The scope includes site survey, structural assessment of rooftops, design and
+engineering, supply of solar PV modules (minimum efficiency 20%), string
+inverters, mounting structures, cabling, earthing, lightning protection,
+net-metering arrangement with NBPDCL/SBPDCL, and commissioning. The contractor
+shall provide comprehensive O&M for 5 years including module cleaning,
+inverter maintenance, and generation monitoring with minimum CUF of 15%.
+
+SECTION 6: FINANCIAL TERMS
+
+Payment Terms: 70% on supply of materials at site, 20% on successful
+commissioning, 10% released in equal annual installments over the O&M period.
+Performance Bank Guarantee: 5% of contract value, valid for the entire O&M
+period. Liquidated Damages: 0.5% of contract value per week of delay, capped
+at 10%. Defect Liability Period: 5 years from date of commissioning.
+
+SECTION 7: TECHNICAL SPECIFICATIONS
+
+Solar modules shall be Mono PERC / TOPCon with minimum 540 Wp rating, tier-1
+manufacturer, with 25-year linear performance warranty. Inverters shall have
+minimum efficiency of 98% with 5-year warranty extendable to 10 years.
+All equipment must be BIS certified as applicable.

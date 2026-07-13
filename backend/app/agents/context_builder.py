@@ -13,6 +13,7 @@ from app.agents.state import AgentState
 from app.models.company import Company, CompanyDocument
 from app.models.tender import Tender
 from app.services.embedding_service import embedding_service
+from app.services.ocr_service import ocr_service
 from app.services.vectorstore_service import vectorstore_service
 from app.utils.logger import logger
 
@@ -116,10 +117,30 @@ async def build_context(
         except Exception as e:
             logger.warning(f"   RAG retrieval failed (non-fatal): {e}")
 
+    # ── Edge case: no/garbage parsed text but PDF on disk ─────
+    # (scanned PDFs sometimes yield <100 chars from PyMuPDF; the OCR
+    #  service falls back to Gemini Vision for image-based pages)
+    tender_text = tender.parsed_text or ""
+    if len(tender_text.strip()) < 100 and tender.local_pdf_path:
+        logger.warning(
+            f"   Tender text too thin ({len(tender_text)} chars) — re-running OCR on {tender.local_pdf_path}"
+        )
+        try:
+            recovered = await ocr_service.extract_text(tender.local_pdf_path)
+            if recovered and len(recovered.strip()) > len(tender_text.strip()):
+                tender_text = recovered
+                tender.parsed_text = recovered  # persist for next time
+                await db.commit()
+                logger.info(f"   ✅ OCR recovery: {len(recovered)} chars extracted")
+        except Exception as e:
+            logger.warning(f"   OCR recovery failed (non-fatal): {e}")
+    if not tender_text.strip():
+        tender_text = tender.description or tender.title
+
     state: AgentState = {
         "tender_id": str(tender.id),
         "user_id": str(user_id),
-        "tender_text": tender.parsed_text or tender.description or tender.title,
+        "tender_text": tender_text,
         "tender_title": tender.title,
         "tender_metadata": tender_metadata,
         "company_profile": company_profile,
