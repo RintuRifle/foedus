@@ -1,0 +1,30 @@
+# Foedus — Daily Tender Scrape (free replacement for a paid cron dyno)
+# Runs at 6:00 AM IST (00:30 UTC) daily. Also wakes the sleeping
+# free-tier instance before triggering.
+#
+# Setup: repo Settings → Secrets and variables → Actions →
+#   FOEDUS_API_URL       = https://foedus-api.onrender.com
+#   SCRAPER_TRIGGER_TOKEN = same value as the Render env var
+
+name: Daily Tender Scrape
+
+on:
+  schedule:
+    - cron: "30 0 * * *"   # 00:30 UTC = 06:00 IST
+  workflow_dispatch: {}     # manual trigger button in GitHub UI
+
+jobs:
+  trigger-scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake the free-tier instance
+        run: |
+          curl -sS --max-time 120 --retry 5 --retry-delay 15 --retry-all-errors \
+            "${{ secrets.FOEDUS_API_URL }}/health" || true
+
+      - name: Trigger ingestion pipeline
+        run: |
+          curl -sS --fail --max-time 60 --retry 3 --retry-delay 20 --retry-all-errors \
+            -X POST \
+            -H "X-Scraper-Token: ${{ secrets.SCRAPER_TRIGGER_TOKEN }}" \
+            "${{ secrets.FOEDUS_API_URL }}/api/v1/scraper/trigger"

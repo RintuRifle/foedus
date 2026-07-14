@@ -40,6 +40,16 @@ class Settings(BaseSettings):
     QDRANT_URL: str = "http://localhost:6333"
     QDRANT_COLLECTION: str = "foedus_tenders"
 
+    # ── Embeddings ────────────────────────────────────────────
+    EMBEDDING_PROVIDER: str = "gemini"   # gemini (API, 0 RAM) | local (BGE-M3, ~1GB RAM)
+    EMBEDDING_DIM: int = 768
+
+    # ── Task runner ───────────────────────────────────────────
+    TASK_RUNNER: str = "inline"          # inline (asyncio, single process) | celery
+
+    # ── Scraper trigger (external cron hits this) ─────────────
+    SCRAPER_TRIGGER_TOKEN: str = ""
+
     # ── JWT Auth ──────────────────────────────────────────────
     JWT_SECRET: str = "change-this-to-a-random-64-char-string-in-production"
     JWT_ALGORITHM: str = "HS256"

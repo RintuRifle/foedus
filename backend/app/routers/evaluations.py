@@ -20,7 +20,7 @@ from app.schemas.evaluation import (
     EvalProgressResponse,
     EvalReportResponse,
 )
-from app.tasks.evaluation_task import evaluate_tender_task
+from app.tasks.runner import dispatch_evaluation
 from app.utils.billing import ensure_plan_current
 from app.utils.logger import logger
 
@@ -109,17 +109,18 @@ async def start_evaluation(
     await db.commit()
     await db.refresh(job)
 
-    # ── Queue Celery task ─────────────────────────────────────
+    # ── Dispatch (inline asyncio or Celery — see TASK_RUNNER) ──
     try:
-        task = evaluate_tender_task.delay(
+        task_id = dispatch_evaluation(
             job_id=str(job.id),
             tender_id=str(tender.id),
             user_id=str(current_user.id),
         )
-        job.celery_task_id = task.id
-        await db.commit()
+        if task_id:
+            job.celery_task_id = task_id
+            await db.commit()
     except Exception as e:
-        logger.error(f"Failed to queue celery task: {e}")
+        logger.error(f"Failed to dispatch evaluation: {e}")
         job.status = "failed"
         job.error_log = str(e)
         current_user.evals_used -= 1  # Refund the quota

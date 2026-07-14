@@ -9,7 +9,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import auth, company, evaluations, payments, proposals, tenders, ws
+from app.routers import (
+    auth,
+    company,
+    evaluations,
+    payments,
+    proposals,
+    scraper_trigger,
+    tenders,
+    ws,
+)
 from app.utils.logger import logger
 from app.utils.tracing import configure_langsmith
 
@@ -64,6 +73,7 @@ app.include_router(tenders.router, prefix="/api/v1")
 app.include_router(evaluations.router, prefix="/api/v1")
 app.include_router(proposals.router, prefix="/api/v1")
 app.include_router(payments.router, prefix="/api/v1")
+app.include_router(scraper_trigger.router, prefix="/api/v1")
 app.include_router(ws.router, prefix="/api/v1")
 
 @app.get("/health", tags=["System"])

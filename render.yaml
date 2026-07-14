@@ -41,6 +41,14 @@ services:
         sync: false
       - key: LANGCHAIN_TRACING_V2
         value: "false"
+      - key: TASK_RUNNER            # inline = no worker dyno needed
+        value: inline
+      - key: EMBEDDING_PROVIDER     # gemini API = no torch in RAM
+        value: gemini
+      - key: EMBEDDING_DIM
+        value: "768"
+      - key: SCRAPER_TRIGGER_TOKEN  # same value goes in GitHub Actions secret
+        generateValue: true
       - key: RESEND_API_KEY
         sync: false
       - key: SUPABASE_URL

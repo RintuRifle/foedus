@@ -21,8 +21,6 @@ class VectorStoreService:
     3. Company-tender similarity matching
     """
 
-    EMBEDDING_DIM = 1024  # BGE-M3 dimension
-
     def __init__(self):
         self.client = QdrantClient(url=settings.QDRANT_URL)
         self.collection_name = settings.QDRANT_COLLECTION
@@ -37,7 +35,7 @@ class VectorStoreService:
             self.client.create_collection(
                 collection_name=self.collection_name,
                 vectors_config=qmodels.VectorParams(
-                    size=self.EMBEDDING_DIM,
+                    size=settings.EMBEDDING_DIM,
                     distance=qmodels.Distance.COSINE,
                 ),
             )

@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Layer-cached dependency install
-COPY backend/requirements.txt ./requirements.txt
+COPY backend/requirements-prod.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # App code + scraper package
@@ -28,5 +28,5 @@ USER foedus
 
 EXPOSE 8000
 
-# Run the all-in-one script
+# Single process: API + inline evaluations + scraper trigger (512MB safe)
 CMD ["./start.sh"]

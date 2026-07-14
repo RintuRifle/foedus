@@ -19,13 +19,7 @@ from app.tasks import celery_app
 from app.utils.logger import logger
 
 
-@celery_app.task(
-    name="foedus.evaluate_tender",
-    bind=True,
-    max_retries=1,
-    default_retry_delay=30,
-)
-def evaluate_tender_task(self, job_id: str, tender_id: str, user_id: str):
+def _celery_entrypoint(self, job_id: str, tender_id: str, user_id: str):
     """
     Celery task that runs the full evaluation pipeline.
 
@@ -44,7 +38,7 @@ def evaluate_tender_task(self, job_id: str, tender_id: str, user_id: str):
     asyncio.set_event_loop(loop)
     try:
         loop.run_until_complete(
-            _run_evaluation_async(self, job_id, tender_id, user_id)
+            execute_evaluation(job_id, tender_id, user_id, celery_task_id=self.request.id)
         )
     except Exception as e:
         logger.error(f"Celery task failed: {e}")
@@ -53,8 +47,26 @@ def evaluate_tender_task(self, job_id: str, tender_id: str, user_id: str):
         loop.close()
 
 
-async def _run_evaluation_async(task, job_id: str, tender_id: str, user_id: str):
-    """Async wrapper for the evaluation pipeline."""
+# Register with Celery only when it's installed (slim inline-mode images skip it)
+if celery_app is not None:
+    evaluate_tender_task = celery_app.task(
+        name="foedus.evaluate_tender",
+        bind=True,
+        max_retries=1,
+        default_retry_delay=30,
+    )(_celery_entrypoint)
+else:
+    evaluate_tender_task = None
+
+
+async def execute_evaluation(
+    job_id: str, tender_id: str, user_id: str, celery_task_id: str | None = None
+):
+    """
+    Core evaluation pipeline — runner-agnostic.
+    Called by the Celery task (TASK_RUNNER=celery) or directly as an
+    asyncio task in the API process (TASK_RUNNER=inline, free tier).
+    """
 
     async with async_session_factory() as db:
         # Step 1: Mark job as running
@@ -65,7 +77,8 @@ async def _run_evaluation_async(task, job_id: str, tender_id: str, user_id: str)
         job.status = "running"
         job.started_at = datetime.now(timezone.utc)
         job.current_agent = "context_builder"
-        job.celery_task_id = task.request.id
+        if celery_task_id:
+            job.celery_task_id = celery_task_id
         await db.commit()
 
         async def on_progress(agent: str, pct: int, message: str) -> None:
