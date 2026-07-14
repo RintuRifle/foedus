@@ -41,6 +41,14 @@ services:
         sync: false
       - key: LANGCHAIN_TRACING_V2
         value: "false"
+      - key: RESEND_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_STORAGE_BUCKET
+        sync: false
 
 
 
