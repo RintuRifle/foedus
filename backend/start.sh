@@ -11,4 +11,4 @@
 # The old multi-process version (celery + scheduler daemon + uvicorn)
 # needed 3x the RAM and OOM'd the free tier. Never again.
 
-exec uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}" --workers 1
+exec uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}" --loop asyncio
