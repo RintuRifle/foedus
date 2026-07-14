@@ -19,13 +19,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ ./
 COPY scraper/ ./scraper/
 
+# Make start script executable
+RUN chmod +x start.sh
+
 # Non-root user
 RUN useradd -m foedus && chown -R foedus:foedus /app
 USER foedus
 
 EXPOSE 8000
 
-# Web (default). Other roles override the command:
-#   worker:  celery -A app.tasks.celery_app worker --loglevel=info --concurrency=2
-#   scraper: python -m scraper.scheduler --once
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the all-in-one script
+CMD ["./start.sh"]
