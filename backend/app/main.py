@@ -45,6 +45,16 @@ async def lifespan(app: FastAPI):
         )
         logger.info("   Sentry initialized ✓")
 
+    # Auto-create database tables on Supabase if they don't exist
+    try:
+        from app.database import Base, engine
+        import app.models  # noqa: F401
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("   Database tables verified/created on Supabase ✓")
+    except Exception as e:
+        logger.error(f"   Database initialization warning: {e}")
+
     yield
 
     # ── Shutdown ──────────────────────────────────────────────
@@ -58,6 +68,17 @@ app = FastAPI(
     redoc_url="/redoc" if settings.APP_DEBUG else None,
     lifespan=lifespan,
 )
+
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal server error: {str(exc)}"},
+    )
 
 app.add_middleware(
     CORSMiddleware,
