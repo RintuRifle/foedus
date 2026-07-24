@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     APP_DEBUG: bool = True
     APP_NAME: str = "Foedus"
-    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:3001"
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:3001,https://foedus-three.vercel.app,*"
 
     @property
     def cors_origins_list(self) -> List[str]:
